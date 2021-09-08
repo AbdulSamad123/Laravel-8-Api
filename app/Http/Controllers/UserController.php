@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\tbl_category;
+use Validator;
 
 class UserController extends Controller
 {
@@ -88,6 +89,37 @@ class UserController extends Controller
     function search($categoryEng)
     {
         return tbl_category::where("categoryEng","like","%".$categoryEng."%")->get();
+    }
+
+    //validation
+
+    function testData(Request $req)
+    {
+        $rules=array(
+            "categoryEng"=>"required|min:2|max:5"
+        );
+        $validator=Validator::make($req->all(),$rules);
+        if($validator->fails())
+        {
+            return response()->json($validator->errors(),401);
+        }
+        else
+        {
+            $device= new tbl_category;
+            $device->categoryID=$req->categoryID;
+            $device->category=$req->category;
+            $device->categoryAr=$req->categoryAr;
+            $device->categoryEng=$req->categoryEng;
+            $result=$device->save();
+            if($result)
+            {
+                return ["result"=>"Data has been Saved"];
+            }
+            else
+            {
+                return ["result"=>"Operation Fail"];
+            }
+        }
     }
  
 }

@@ -3,6 +3,8 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\MemberController;
+use App\Http\Controllers\LoginController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,22 +21,15 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::group(['middleware' => 'auth:sanctum'], function(){
+  //All secure URL's
+
+  
 //for Get
 
 Route::get("list",[UserController::class,'list']);
 
-
-Route::get("list/{id}",[UserController::class,'list']);
-
- //when colum name is id run this for get data
-
-Route::get("list/{id?}",[UserController::class,'list']);
-
-  //when columname is categoryID run this for get data by id
-
-Route::get('list/{categoryID}',[UserController::class,'list']);
-
-//for Post
+  //for Post
 
 Route::post("add",[UserController::class,'add']);
 
@@ -49,3 +44,25 @@ Route::delete("delete/{categoryID}",[UserController::class,'delete']);
 // for search
 
 Route::get("search/{categoryEng}",[UserController::class,'search']);
+
+//For Validation
+
+Route::post("save",[UserController::class,'testData']);
+
+// for resource
+  Route::apiResource("member",MemberController::class);
+
+// for upload file
+// for upload file  
+
+Route::post("upload",[FileController::class,'upload']);
+
+
+  });
+
+
+
+
+//Check Authentication by sanctum or login
+
+Route::post("login",[LoginController::class,'index']);
